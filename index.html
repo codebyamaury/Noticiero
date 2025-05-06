@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticiero Digital</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Encabezado */
+        header {
+            background-color: #1a365d;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: #f8b400;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f8b400;
+        }
+        
+        .search-bar {
+            display: flex;
+            margin-left: 20px;
+        }
+        
+        .search-bar input {
+            padding: 8px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            width: 200px;
+        }
+        
+        .search-bar button {
+            background: #f8b400;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            color: #1a365d;
+            font-weight: bold;
+        }
+        
+        /* Fecha y hora */
+        .date-time {
+            background-color: #f8b400;
+            color: #1a365d;
+            padding: 8px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* Noticias destacadas */
+        .featured-news {
+            margin: 30px 0;
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .featured-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .featured-slide.active {
+            opacity: 1;
+        }
+        
+        .featured-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 30px 20px 20px;
+        }
+        
+        .featured-content h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .featured-content p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .read-more {
+            display: inline-block;
+            background-color: #f8b400;
+            color: #1a365d;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .read-more:hover {
+            background-color: #e5a700;
+        }
+        
+        .slide-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+        }
+        
+        .slide-controls button {
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        
+        .slide-controls button.active {
+            background: #f8b400;
+        }
+        
+        /* Categorías */
+        .categories {
+            margin: 30px 0;
+        }
+        
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background-color: #1a365d;
+            color: white;
+        }
+        
+        /* Noticias */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .news-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .news-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .news-content {
+            padding: 20px;
+        }
+        
+        .news-category {
+            display: inline-block;
+            background-color: #1a365d;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .news-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #1a365d;
+        }
+        
+        .news-excerpt {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 12px;
+        }
+        
+        /* Pie de página */
+        footer {
+            background-color: #1a365d;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #f8b400;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section ul li a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: #f8b400;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 0 15px 10px 0;
+            }
+            
+            .search-bar {
+                margin: 15px 0 0 0;
+                width: 100%;
+            }
+            
+            .search-bar input {
+                flex-grow: 1;
+            }
+            
+            .featured-news {
+                height: 300px;
+            }
+            
+            .featured-content h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>Noticiero<span>Digital</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-category="todas">Inicio</a></li>
+                    <li><a href="#" class="nav-link" data-category="politica">Política</a></li>
+                    <li><a href="#" class="nav-link" data-category="economia">Economía</a></li>
+                    <li><a href="#" class="nav-link" data-category="deportes">Deportes</a></li>
+                    <li><a href="#" class="nav-link" data-category="tecnologia">Tecnología</a></li>
+                    <li><a href="#" class="nav-link" data-category="entretenimiento">Entretenimiento</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar noticias...">
+                <button id="search-btn">Buscar</button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Fecha y hora -->
+    <div class="date-time">
+        <div class="container" id="current-date-time">
+            Cargando fecha y hora...
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <main class="container">
+        <!-- Noticias destacadas -->
+        <section class="featured-news">
+            <div class="featured-slide active" style="background-image: url('https://via.placeholder.com/1200x600/1a365d/ffffff?text=Noticia+Destacada+1')">
+                <div class="featured-content">
+                    <h2>Avances importantes en la cumbre climática internacional</h2>
+                    <p>Los líderes mundiales llegan a un acuerdo histórico para reducir emisiones de carbono en un 50% para 2030.</p>
+                    <a href="#" class="read-more">Leer más</a>
+                </div>
+            </div>
+            <div class="featured-slide" style="background-image: url('https://via.placeholder.com/1200x600/f8b400/ffffff?text=Noticia+Destacada+2')">
+                <div class="featured-content">
+                    <h2>Nueva tecnología revoluciona el sector energético</h2>
+                    <p>Científicos desarrollan baterías que pueden almacenar energía renovable por hasta 10 veces más tiempo.</p>
+                    <a href="#" class="read-more">Leer más</a>
+                </div>
+            </div>
+            <div class="featured-slide" style="background-image: url('https://via.placeholder.com/1200x600/333333/ffffff?text=Noticia+Destacada+3')">
+                <div class="featured-content">
+                    <h2>Récord histórico en los Juegos Olímpicos</h2>
+                    <p>Atleta rompe marca mundial que se mantenía desde hace 20 años en la prueba de 100 metros planos.</p>
+                    <a href="#" class="read-more">Leer más</a>
+                </div>
+            </div>
+            <div class="slide-controls">
+                <button class="slide-btn active" data-slide="0"></button>
+                <button class="slide-btn" data-slide="1"></button>
+                <button class="slide-btn" data-slide="2"></button>
+            </div>
+        </section>
+        
+        <!-- Categorías -->
+        <section class="categories">
+            <div class="category-filters">
+                <button class="category-btn active" data-category="todas">Todas</button>
+                <button class="category-btn" data-category="politica">Política</button>
+                <button class="category-btn" data-category="economia">Economía</button>
+                <button class="category-btn" data-category="deportes">Deportes</button>
+                <button class="category-btn" data-category="tecnologia">Tecnología</button>
+                <button class="category-btn" data-category="entretenimiento">Entretenimiento</button>
+                <button class="category-btn" data-category="salud">Salud</button>
+                <button class="category-btn" data-category="ciencia">Ciencia</button>
+            </div>
+            
+            <div class="news-grid" id="news-container">
+                <!-- Las tarjetas de noticias se generarán con JavaScript -->
+            </div>
+        </section>
+    </main>
+    
+    <!-- Pie de página -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Sobre Nosotros</h3>
+                    <p>Noticiero Digital es un medio de comunicación comprometido con la verdad y la información de calidad desde 2010.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f">f</i></a>
+                        <a href="#"><i class="fab fa-twitter">t</i></a>
+                        <a href="#"><i class="fab fa-instagram">i</i></a>
+                        <a href="#"><i class="fab fa-youtube">y</i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#">Últimas Noticias</a></li>
+                        <li><a href="#">Más Leídas</a></li>
+                        <li><a href="#">Opinión</a></li>
+                        <li><a href="#">Multimedia</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Categorías</h3>
+                    <ul>
+                        <li><a href="#">Política</a></li>
+                        <li><a href="#">Economía</a></li>
+                        <li><a href="#">Deportes</a></li>
+                        <li><a href="#">Tecnología</a></li>
+                        <li><a href="#">Entretenimiento</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li>Email: contacto@noticierodigital.com</li>
+                        <li>Teléfono: +123 456 7890</li>
+                        <li>Dirección: Av. Principal 123, Ciudad</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Noticiero Digital. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de noticias (simulando una base de datos)
+        const noticias = [
+            {
+                id: 1,
+                titulo: "Nuevas medidas económicas anunciadas por el gobierno",
+                extracto: "El ministerio de economía anunció un paquete de medidas para estimular el crecimiento económico y controlar la inflación.",
+                categoria: "economia",
+                imagen: "https://via.placeholder.com/400x250/1a365d/ffffff?text=Economia",
+                fecha: "2023-05-15",
+                autor: "Carlos Rodríguez"
+            },
+            {
+                id: 2,
+                titulo: "Equipo nacional clasifica a la final del mundial",
+                extracto: "Con una victoria contundente de 3-0, el equipo aseguró su lugar en la final del campeonato que se disputará el próximo domingo.",
+                categoria: "deportes",
+                imagen: "https://via.placeholder.com/400x250/f8b400/ffffff?text=Deportes",
+                fecha: "2023-05-14",
+                autor: "Ana Martínez"
+            },
+            {
+                id: 3,
+                titulo: "Nueva tecnología de inteligencia artificial sorprende al mundo",
+                extracto: "La empresa tecnológica presentó un sistema de IA capaz de generar contenido creativo con un nivel de calidad nunca antes visto.",
+                categoria: "tecnologia",
+                imagen: "https://via.placeholder.com/400x250/333333/ffffff?text=Tecnologia",
+                fecha: "2023-05-13",
+                autor: "Miguel Sánchez"
+            },
+            {
+                id: 4,
+                titulo: "Estreno de película bate récords de taquilla",
+                extracto: "La nueva entrega de la saga cinematográfica recaudó más de 300 millones de dólares en su primer fin de semana de estreno.",
+                categoria: "entretenimiento",
+                imagen: "https://via.placeholder.com/400x250/e91e63/ffffff?text=Entretenimiento",
+                fecha: "2023-05-12",
+                autor: "Laura Gómez"
+            },
+            {
+                id: 5,
+                titulo: "Elecciones: resultados preliminares muestran empate técnico",
+                extracto: "Con el 95% de las mesas escrutadas, los dos principales candidatos se encuentran separados por menos de un punto porcentual.",
+                categoria: "politica",
+                imagen: "https://via.placeholder.com/400x250/9c27b0/ffffff?text=Politica",
+                fecha: "2023-05-11",
+                autor: "Roberto Álvarez"
+            },
+            {
+                id: 6,
+                titulo: "Descubren nuevo tratamiento contra enfermedad degenerativa",
+                extracto: "Científicos logran avances significativos en el tratamiento de una enfermedad que afecta a millones de personas en todo el mundo.",
+                categoria: "salud",
+                imagen: "https://via.placeholder.com/400x250/4caf50/ffffff?text=Salud",
+                fecha: "2023-05-10",
+                autor: "Patricia Núñez"
+            },
+            {
+                id: 7,
+                titulo: "Crisis diplomática entre países vecinos se intensifica",
+                extracto: "Tras las declaraciones del ministro de relaciones exteriores, el país vecino decidió retirar a su embajador como medida de protesta.",
+                categoria: "politica",
+                imagen: "https://via.placeholder.com/400x250/9c27b0/ffffff?text=Politica",
+                fecha: "2023-05-09",
+                autor: "Fernando Torres"
+            },
+            {
+                id: 8,
+                titulo: "Nuevo descubrimiento en Marte sugiere presencia de agua en el pasado",
+                extracto: "El rover de exploración encontró evidencias que refuerzan la teoría de que el planeta rojo tuvo grandes océanos hace millones de años.",
+                categoria: "ciencia",
+                imagen: "https://via.placeholder.com/400x250/ff5722/ffffff?text=Ciencia",
+                fecha: "2023-05-08",
+                autor: "Elena Vega"
+            },
+            {
+                id: 9,
+                titulo: "Bolsa de valores registra su mejor semana en cinco años",
+                extracto: "Los mercados financieros reaccionaron positivamente ante las nuevas políticas económicas y el optimismo de los inversores.",
+                categoria: "economia",
+                imagen: "https://via.placeholder.com/400x250/1a365d/ffffff?text=Economia",
+                fecha: "2023-05-07",
+                autor: "Javier Méndez"
+            }
+        ];
+
+        // Función para mostrar noticias según la categoría
+        function mostrarNoticias(categoria = 'todas') {
+            const contenedor = document.getElementById('news-container');
+            contenedor.innerHTML = '';
+            
+            let noticiasAMostrar = noticias;
+            
+            if (categoria !== 'todas') {
+                noticiasAMostrar = noticias.filter(noticia => noticia.categoria === categoria);
+            }
+            
+            // Buscar texto si hay algo en el campo de búsqueda
+            const textoBusqueda = document.getElementById('search-input').value.toLowerCase();
+            if (textoBusqueda) {
+                noticiasAMostrar = noticiasAMostrar.filter(noticia => 
+                    noticia.titulo.toLowerCase().includes(textoBusqueda) || 
+                    noticia.extracto.toLowerCase().includes(textoBusqueda)
+                );
+            }
+            
+            if (noticiasAMostrar.length === 0) {
+                contenedor.innerHTML = '<p class="no-results">No se encontraron noticias que coincidan con tu búsqueda.</p>';
+                return;
+            }
+            
+            noticiasAMostrar.forEach(noticia => {
+                const card = document.createElement('article');
+                card.className = 'news-card';
+                
+                card.innerHTML = `
+                    <div class="news-image" style="background-image: url('${noticia.imagen}')"></div>
+                    <div class="news-content">
+                        <span class="news-category">${noticia.categoria.charAt(0).toUpperCase() + noticia.categoria.slice(1)}</span>
+                        <h3 class="news-title">${noticia.titulo}</h3>
+                        <p class="news-excerpt">${noticia.extracto}</p>
+                        <div class="news-meta">
+                            <span>${noticia.fecha}</span>
+                            <span>${noticia.autor}</span>
+                        </div>
+                    </div>
+                `;
+                
+                contenedor.appendChild(card);
+            });
+        }
+        
+        // Carrusel de noticias destacadas
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.featured-slide');
+        const slideButtons = document.querySelectorAll('.slide-btn');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slideButtons.forEach(btn => btn.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            slideButtons[index].classList.add('active');
+            slideIndex = index;
+        }
+        
+        // Cambiar slide automáticamente cada 5 segundos
+        setInterval(() => {
+            slideIndex = (slideIndex + 1) % slides.length;
+            showSlide(slideIndex);
+        }, 5000);
+        
+        // Evento para los botones del carrusel
+        slideButtons.forEach((btn, index) => {
+            btn.addEventListener('click', () => showSlide(index));
+        });
+        
+        // Eventos para los filtros de categoría
+        document.querySelectorAll('.category-btn, .nav-link').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Actualizar botones activos
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                if (e.target.classList.contains('category-btn')) {
+                    e.target.classList.add('active');
+                } else {
+                    document.querySelector(`.category-btn[data-category="${e.target.dataset.category}"]`).classList.add('active');
+                }
+                
+                // Mostrar noticias de la categoría seleccionada
+                mostrarNoticias(e.target.dataset.category);
+            });
+        });
+        
+        // Evento para el botón de búsqueda
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const categoriaActiva = document.querySelector('.category-btn.active').dataset.category;
+            mostrarNoticias(categoriaActiva);
+        });
+        
+        // Evento para buscar al presionar Enter
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const categoriaActiva = document.querySelector('.category-btn.active').dataset.category;
+                mostrarNoticias(categoriaActiva);
+            }
+        });
+        
+        // Actualizar fecha y hora
+        function actualizarFechaHora() {
+            const ahora = new Date();
+            const opciones = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const fechaFormateada = ahora.toLocaleDateString('es-ES', opciones);
+            document.getElementById('current-date-time').textContent = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+        }
+        
+        // Actualizar fecha cada minuto
+        actualizarFechaHora();
+        setInterval(actualizarFechaHora, 60000);
+        
+        // Cargar noticias al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            mostrarNoticias();
+        });
+    </script>
+</body>
+</html>
